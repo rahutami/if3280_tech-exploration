@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/auth/entities/user.entity';
 import { Product } from 'src/products/entities/product.entity';
 import { Repository } from 'typeorm';
+import { AddShoppingCartItemDto } from './dtos/add-shopping-cart-item.dto';
+import { UpdateShoppingCartItem } from './dtos/update-shopping-cart-item.dto';
 
 @Injectable()
 export class ShoppingCartService {
@@ -11,15 +13,15 @@ export class ShoppingCartService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async addNew(){
+  async addNew(item: AddShoppingCartItemDto){
+    
+  }
+
+  async update(item: UpdateShoppingCartItem){
 
   }
 
-  async update(){
-
-  }
-
-  async delete(){
+  async delete(id: number){
     
   }
 }

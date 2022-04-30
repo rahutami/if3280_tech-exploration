@@ -1,5 +1,6 @@
+import { Exclude } from 'class-transformer';
 import { Product } from 'src/products/entities/product.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity()
 export class User {
@@ -13,11 +14,15 @@ export class User {
   username: string;
 
   @Column()
-  password: string;
+  @Exclude({ toPlainOnly: true })
+  password: number;
 
-  @ManyToMany(() => Product, (product) => product.users)
+  @ManyToMany(() => Product, (product) => product.boughtBy)
   @JoinTable({
-    name: "shopping_cart"
+    name: 'shopping_cart',
   })
-  products: Product[];
+  productsBought: Product[];
+
+  @OneToMany(() => Product, (product) => product.uploadedBy)
+  productsUploaded: Product;
 }

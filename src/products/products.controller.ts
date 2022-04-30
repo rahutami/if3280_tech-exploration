@@ -1,4 +1,7 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
+import { CurrentUser } from 'src/auth/current-user';
+import { User } from 'src/auth/entities/user.entity';
+import { JwtAuthGuard } from 'src/auth/jwt-auth-guard';
 import { CreateProductDto } from './dtos/create-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
 import { ProductsService } from './products.service';
@@ -18,20 +21,24 @@ export class ProductsController {
   }
 
   @Post()
-  async create(@Body() body: CreateProductDto) {
-    return this.productsService.create(body);
+  @UseGuards(JwtAuthGuard)
+  async create(@Body() body: CreateProductDto, @CurrentUser() user) {
+    return this.productsService.create(body, user);
   }
 
   @Delete('/:id')
-  async delete(@Param('id', ParseIntPipe) id: number) {
-    return await this.productsService.delete(id);
+  @UseGuards(JwtAuthGuard)
+  async delete(@Param('id', ParseIntPipe) id: number, @CurrentUser() user) {
+    return await this.productsService.delete(id, user);
   }
 
   @Put('/:id')
+  @UseGuards(JwtAuthGuard)
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateProductDto,
+    @CurrentUser() user: User,
   ) {
-    return await this.productsService.update(id, body);
+    return await this.productsService.update(id, body, user);
   }
 }

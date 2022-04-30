@@ -11,16 +11,9 @@ import { ShoppingCartModule } from './shopping-cart/shopping-cart.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'rahutami',
-      database: 'socif_explore',
-      entities: [
-        User,
-        Product
-      ],
+      type :"sqlite",
+      database: "shoppingDB.db",
+      entities: [__dirname + "/**/*.entity{.ts,.js}"],
       synchronize: true,
     }),
     AuthModule,

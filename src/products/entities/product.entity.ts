@@ -1,5 +1,5 @@
 import { User } from 'src/auth/entities/user.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToMany, OneToOne, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Product {
@@ -19,6 +19,17 @@ export class Product {
   })
   description: string;
 
-  @ManyToMany(() => User, (user) => user.products)
-  users: User[];
+  @ManyToMany(() => User, (user) => user.productsBought)
+  boughtBy: User[];
+
+  @Column({
+    name: 'uploader_id',
+  })
+  uploaderId: number;
+
+  @ManyToOne(() => User, (user) => user.productsUploaded)
+  @JoinColumn([
+    { name: 'uploader_id', referencedColumnName: 'id' },
+  ])
+  uploadedBy: User;
 }
