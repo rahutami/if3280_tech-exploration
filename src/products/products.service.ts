@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/auth/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -29,9 +29,12 @@ export class ProductsService {
   }
 
   async delete(id: number, user){
-    const productEntity = await this.productRepository.findOne({id, uploadedBy: user.userId});
+    const productEntity = await this.productRepository.findOne({
+      id,
+    });
 
     if (!productEntity) throw new NotFoundException();
+    if (productEntity.uploaderId != user.userId) throw new UnauthorizedException();
 
     return await this.productRepository.delete({id});
   }
@@ -39,10 +42,11 @@ export class ProductsService {
   async update(id: number, product: UpdateProductDto, user){
     const productEntity = await this.productRepository.findOne({
       id,
-      uploadedBy: user.userId,
     });
 
     if (!productEntity) throw new NotFoundException();
+    if (productEntity.uploaderId != user.userId)
+      throw new UnauthorizedException();
 
     return await this.productRepository.save({
       id,
